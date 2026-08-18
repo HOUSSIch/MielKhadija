@@ -22,10 +22,10 @@ document.querySelector('#year').textContent = new Date().getFullYear();
 
 // NumÃ©ro WhatsApp officiel
 document.querySelectorAll('a[href*="216298555522"]').forEach(link => {
-  link.href = link.href.replace('216298555522', '21629855522');
+  link.href = link.href.replace('216298555522', '21694323527');
 });
 const displayedWhatsappNumber = document.querySelector('.contact-button strong');
-if (displayedWhatsappNumber) displayedWhatsappNumber.textContent = '+216 29 855 522';
+if (displayedWhatsappNumber) displayedWhatsappNumber.textContent = '+216 94 323 527';
 
 // Carrousel horizontal en profondeur
 const productCards = [...document.querySelectorAll('.product-card')];
