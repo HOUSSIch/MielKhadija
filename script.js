@@ -104,6 +104,21 @@ if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
   });
 }
 
+// Inclinaison 3D des bouteilles suivant la souris
+document.querySelectorAll('.honey-bottle').forEach(bottle => {
+  bottle.addEventListener('pointermove', event => {
+    const rect = bottle.getBoundingClientRect();
+    const x = (event.clientX - rect.left) / rect.width - .5;
+    const y = (event.clientY - rect.top) / rect.height - .5;
+    bottle.style.setProperty('--tilt-x', `${-y * 22}deg`);
+    bottle.style.setProperty('--tilt-y', `${x * 28}deg`);
+  });
+  bottle.addEventListener('pointerleave', () => {
+    bottle.style.setProperty('--tilt-x', '0deg');
+    bottle.style.setProperty('--tilt-y', '0deg');
+  });
+});
+
 // Curseur abeille animÃ© pour les appareils avec souris
 const beeCursor = document.querySelector('.bee-cursor');
 const supportsBeeCursor = window.matchMedia('(pointer: fine)').matches && !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -133,4 +148,3 @@ if (supportsBeeCursor) {
   }
   animateBeeCursor();
 }
-
