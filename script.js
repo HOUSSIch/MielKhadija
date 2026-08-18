@@ -20,6 +20,13 @@ const observer = new IntersectionObserver(entries => {
 document.querySelectorAll('.reveal').forEach(element => observer.observe(element));
 document.querySelector('#year').textContent = new Date().getFullYear();
 
+// NumÃ©ro WhatsApp officiel
+document.querySelectorAll('a[href*="216298555522"]').forEach(link => {
+  link.href = link.href.replace('216298555522', '21629855522');
+});
+const displayedWhatsappNumber = document.querySelector('.contact-button strong');
+if (displayedWhatsappNumber) displayedWhatsappNumber.textContent = '+216 29 855 522';
+
 // Carrousel horizontal en profondeur
 const productCards = [...document.querySelectorAll('.product-card')];
 let activeProduct = 0;
@@ -71,7 +78,7 @@ productShell.addEventListener('pointerenter', () => clearInterval(carouselTimer)
 productShell.addEventListener('pointerleave', () => { clearInterval(carouselTimer); startCarousel(); });
 startCarousel();
 
-// Profondeur légère au pointeur sur les autres éléments
+// Profondeur lÃ©gÃ¨re au pointeur sur les autres Ã©lÃ©ments
 document.querySelectorAll('.stats, .steps, .contact-button').forEach(element => {
   element.classList.add('depth-card');
   element.addEventListener('pointermove', event => {
@@ -97,7 +104,7 @@ if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
   });
 }
 
-// Curseur abeille animé pour les appareils avec souris
+// Curseur abeille animÃ© pour les appareils avec souris
 const beeCursor = document.querySelector('.bee-cursor');
 const supportsBeeCursor = window.matchMedia('(pointer: fine)').matches && !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 if (supportsBeeCursor) {
@@ -126,3 +133,4 @@ if (supportsBeeCursor) {
   }
   animateBeeCursor();
 }
+
