@@ -11,7 +11,7 @@ document.querySelectorAll('.catalogue-card').forEach(card => {
 
 // NumÃ©ro WhatsApp officiel
 document.querySelectorAll('a[href*="216298555522"]').forEach(link => {
-  link.href = link.href.replace('216298555522', '21629855522');
+  link.href = link.href.replace('216298555522', '21694323527');
 });
 
 const beeCursor = document.querySelector('.bee-cursor');
