@@ -9,6 +9,11 @@ document.querySelectorAll('.catalogue-card').forEach(card => {
   card.addEventListener('pointerleave', () => card.style.transform = '');
 });
 
+// NumÃ©ro WhatsApp officiel
+document.querySelectorAll('a[href*="216298555522"]').forEach(link => {
+  link.href = link.href.replace('216298555522', '21629855522');
+});
+
 const beeCursor = document.querySelector('.bee-cursor');
 if (matchMedia('(pointer:fine)').matches && !matchMedia('(prefers-reduced-motion:reduce)').matches) {
   document.body.classList.add('bee-cursor-enabled');
@@ -18,3 +23,4 @@ if (matchMedia('(pointer:fine)').matches && !matchMedia('(prefers-reduced-motion
   document.querySelectorAll('a,button').forEach(el=>{el.addEventListener('pointerenter',()=>beeCursor.classList.add('hovering'));el.addEventListener('pointerleave',()=>beeCursor.classList.remove('hovering'))});
   (function animate(){x+=(tx-x)*.3;y+=(ty-y)*.3;beeCursor.style.transform=`translate3d(${x}px,${y}px,0) rotate(var(--bee-angle))`;requestAnimationFrame(animate)})();
 }
+
