@@ -28,7 +28,7 @@ const displayedWhatsappNumber = document.querySelector('.contact-button strong')
 if (displayedWhatsappNumber) displayedWhatsappNumber.textContent = '+216 94 323 527';
 
 // Carrousel horizontal en profondeur
-const productCards = [...document.querySelectorAll('.product-card')];
+let productCards = [...document.querySelectorAll('.product-card')];
 let activeProduct = 0;
 let dragStart = 0;
 let dragDelta = 0;
@@ -54,6 +54,7 @@ function renderProducts() {
 }
 
 function rotateProducts(direction) {
+  if (!productCards.length) return;
   activeProduct = (activeProduct + direction + productCards.length) % productCards.length;
   renderProducts();
 }
@@ -68,6 +69,11 @@ productShell.addEventListener('pointerup', () => {
   dragStart = 0;
 });
 renderProducts();
+window.addEventListener('home-products:rendered', () => {
+  productCards = [...document.querySelectorAll('.product-card')];
+  activeProduct = 0;
+  renderProducts();
+});
 
 let carouselTimer;
 function startCarousel() {

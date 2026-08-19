@@ -11,19 +11,25 @@ function catalogueCard(product, index) {
     <img src="${product.image_url}" alt="${product.name}" loading="lazy">
     <div><small>${product.subtitle || ''}</small><h2>${product.name}</h2>
     <p>${product.format}${product.description ? ` · ${product.description}` : ''}</p>
-    <footer><strong>${product.price} DT</strong><a href="${productWhatsApp(product)}" target="_blank" rel="noopener">Commander <b>↗</b></a></footer></div>
+    <footer><strong>${product.price} DT</strong><button class="add-cart" data-cart-product='${JSON.stringify(product).replaceAll("'", "&#39;")}'>Ajouter <b>+</b></button></footer></div>
   </article>`;
 }
 
-async function loadCatalogueProducts() {
-  const grid = document.querySelector('.catalogue-grid');
-  if (!grid || !window.mielSupabase) return;
-  const { data, error } = await window.mielSupabase.from('products').select('*').eq('is_active', true).order('display_order');
-  if (error || !data?.length) return;
-  grid.innerHTML = data.map(catalogueCard).join('');
-  const count = document.querySelector('[data-product-count]');
-  if (count) count.textContent = `${data.length} produit${data.length > 1 ? 's' : ''}`;
-  window.dispatchEvent(new CustomEvent('catalogue:rendered'));
+function homeCard(product, index) {
+  return `<article class="product-card"><span class="product-index">N° ${String(index + 1).padStart(2, '0')}</span><figure class="product-photo"><img src="${product.image_url}" alt="${product.name}" loading="lazy"><figcaption>Récolte Miel Khadija</figcaption></figure><h3>${product.name}</h3><p>${product.subtitle || product.format}</p><div class="product-buy"><strong>${product.price} DT</strong><button class="add-cart" data-cart-product='${JSON.stringify(product).replaceAll("'", "&#39;")}'>Ajouter au panier <span>+</span></button></div><small class="draft">${product.format}</small></article>`;
 }
 
-document.addEventListener('DOMContentLoaded', loadCatalogueProducts);
+async function loadSupabaseProducts() {
+  const grid = document.querySelector('.catalogue-grid');
+  const home = document.querySelector('.products');
+  if ((!grid && !home) || !window.mielSupabase) return;
+  const { data, error } = await window.mielSupabase.from('products').select('*').eq('is_active', true).order('display_order');
+  if (error || !data?.length) return;
+  if (grid) { grid.innerHTML = data.map(catalogueCard).join(''); window.dispatchEvent(new CustomEvent('catalogue:rendered')); }
+  if (home) { home.innerHTML = data.slice(0, 6).map(homeCard).join(''); window.dispatchEvent(new CustomEvent('home-products:rendered')); }
+  const count = document.querySelector('[data-product-count]');
+  if (count) count.textContent = `${data.length} produit${data.length > 1 ? 's' : ''}`;
+  document.querySelectorAll('.view-all-products b').forEach(el => el.textContent = `${data.length} produits`);
+}
+
+document.addEventListener('DOMContentLoaded', loadSupabaseProducts);
