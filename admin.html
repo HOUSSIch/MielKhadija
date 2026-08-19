@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow"><title>Administration — Miel Khadija</title>
+  <link rel="icon" href="assets/logo-miel-khadija.png"><link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Fraunces:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+  <main class="admin-shell">
+    <header><a href="index.html"><img src="assets/logo-miel-khadija.png" alt=""> Miel Khadija</a><button id="logout" hidden>Déconnexion</button></header>
+    <section id="login-panel" class="login-card">
+      <p>ESPACE PRIVÉ</p><h1>Administration</h1><p>Connectez-vous pour gérer les produits et leurs images.</p>
+      <form id="login-form"><label>E-mail<input id="login-email" type="email" required autocomplete="username"></label><label>Mot de passe<input id="login-password" type="password" required autocomplete="current-password"></label><button>Se connecter</button><div class="message" id="login-message"></div></form>
+    </section>
+    <section id="dashboard" hidden>
+      <div class="dashboard-head"><div><p>CATALOGUE</p><h1>Gestion des produits</h1></div><button id="new-product">+ Nouveau produit</button></div>
+      <div id="product-list" class="product-list"></div>
+    </section>
+  </main>
+  <dialog id="product-dialog"><form id="product-form"><div class="form-head"><h2 id="form-title">Nouveau produit</h2><button type="button" id="close-dialog">×</button></div><input id="product-id" type="hidden">
+    <div class="form-grid"><label>Nom<input id="name" required></label><label>Sous-titre<input id="subtitle" placeholder="Doux · Floral"></label><label>Prix (DT)<input id="price" type="number" min="0" step="0.1" required></label><label>Format<input id="format" placeholder="Pot de 500 g" required></label><label class="wide">Description<textarea id="description" rows="3"></textarea></label><label>Ordre d’affichage<input id="display-order" type="number" min="0" value="0"></label><label class="toggle"><input id="is-active" type="checkbox" checked> Produit visible</label><label class="wide">Image<input id="image" type="file" accept="image/png,image/jpeg,image/webp"><small>PNG, JPG ou WebP — 5 Mo maximum</small></label></div>
+    <img id="image-preview" class="image-preview" alt="Aperçu" hidden><div class="message" id="form-message"></div><div class="form-actions"><button type="button" id="delete-product" class="danger" hidden>Supprimer</button><button type="submit">Enregistrer</button></div>
+  </form></dialog>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-config.js"></script><script src="admin.js"></script>
+</body></html>

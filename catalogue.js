@@ -1,4 +1,4 @@
-document.querySelectorAll('.catalogue-card').forEach(card => {
+function bindCatalogueCards() { document.querySelectorAll('.catalogue-card').forEach(card => {
   card.addEventListener('pointermove', event => {
     if (!matchMedia('(pointer:fine)').matches) return;
     const rect = card.getBoundingClientRect();
@@ -7,9 +7,11 @@ document.querySelectorAll('.catalogue-card').forEach(card => {
     card.style.transform = `perspective(900px) rotateX(${-y * 4}deg) rotateY(${x * 5}deg) translateY(-7px)`;
   });
   card.addEventListener('pointerleave', () => card.style.transform = '');
-});
+}); }
+bindCatalogueCards();
+window.addEventListener('catalogue:rendered', bindCatalogueCards);
 
-// NumÃ©ro WhatsApp officiel
+// Numéro WhatsApp officiel
 document.querySelectorAll('a[href*="216298555522"]').forEach(link => {
   link.href = link.href.replace('216298555522', '21694323527');
 });
@@ -23,4 +25,3 @@ if (matchMedia('(pointer:fine)').matches && !matchMedia('(prefers-reduced-motion
   document.querySelectorAll('a,button').forEach(el=>{el.addEventListener('pointerenter',()=>beeCursor.classList.add('hovering'));el.addEventListener('pointerleave',()=>beeCursor.classList.remove('hovering'))});
   (function animate(){x+=(tx-x)*.3;y+=(ty-y)*.3;beeCursor.style.transform=`translate3d(${x}px,${y}px,0) rotate(var(--bee-angle))`;requestAnimationFrame(animate)})();
 }
-
