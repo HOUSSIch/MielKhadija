@@ -24,9 +24,17 @@ async function loadSupabaseProducts() {
   const home = document.querySelector('.products');
   if ((!grid && !home) || !window.mielSupabase) return;
   const { data, error } = await window.mielSupabase.from('products').select('*').eq('is_active', true).order('display_order');
-  if (error || !data?.length) return;
+  if (error || !data?.length) {
+    grid?.classList.remove('products-loading');
+    home?.classList.remove('products-loading');
+    return;
+  }
   if (grid) { grid.innerHTML = data.map(catalogueCard).join(''); window.dispatchEvent(new CustomEvent('catalogue:rendered')); }
   if (home) { home.innerHTML = data.slice(0, 6).map(homeCard).join(''); window.dispatchEvent(new CustomEvent('home-products:rendered')); }
+  requestAnimationFrame(() => {
+    grid?.classList.remove('products-loading');
+    home?.classList.remove('products-loading');
+  });
   const count = document.querySelector('[data-product-count]');
   if (count) count.textContent = `${data.length} produit${data.length > 1 ? 's' : ''}`;
   document.querySelectorAll('.view-all-products b').forEach(el => el.textContent = `${data.length} produits`);
