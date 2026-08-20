@@ -130,13 +130,12 @@ const beeCursor = document.querySelector('.bee-cursor');
 const supportsBeeCursor = window.matchMedia('(pointer: fine)').matches && !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 if (supportsBeeCursor) {
   document.body.classList.add('bee-cursor-enabled');
-  let beeX = -100, beeY = -100, targetBeeX = -100, targetBeeY = -100, lastBeeX = -100;
+  let lastBeeX = -100;
   document.addEventListener('pointermove', event => {
-    targetBeeX = event.clientX + 7;
-    targetBeeY = event.clientY + 7;
-    const direction = targetBeeX < lastBeeX ? 180 : 0;
+    const direction = event.clientX < lastBeeX ? 180 : 0;
     beeCursor.style.setProperty('--bee-angle', `${direction}deg`);
-    lastBeeX = targetBeeX;
+    lastBeeX = event.clientX;
+    beeCursor.style.transform = `translate3d(${event.clientX}px,${event.clientY}px,0) rotate(var(--bee-angle))`;
     beeCursor.classList.add('visible');
   });
   document.addEventListener('pointerleave', () => beeCursor.classList.remove('visible'));
@@ -146,11 +145,4 @@ if (supportsBeeCursor) {
     element.addEventListener('pointerenter', () => beeCursor.classList.add('hovering'));
     element.addEventListener('pointerleave', () => beeCursor.classList.remove('hovering'));
   });
-  function animateBeeCursor() {
-    beeX += (targetBeeX - beeX) * .3;
-    beeY += (targetBeeY - beeY) * .3;
-    beeCursor.style.transform = `translate3d(${beeX}px,${beeY}px,0) rotate(var(--bee-angle))`;
-    requestAnimationFrame(animateBeeCursor);
-  }
-  animateBeeCursor();
 }
