@@ -1,22 +1,28 @@
 const WHATSAPP_NUMBER = '21694323527';
 
 function productWhatsApp(product) {
-  const message = `Bonjour Miel Khadija, je souhaite commander ${product.name} (${product.format} - ${product.price} DT). Pouvez-vous confirmer sa disponibilité ?`;
+  const price = product.is_promo && product.promo_price ? product.promo_price : product.price;
+  const message = `Bonjour Miel Khadija, je souhaite commander ${product.name} (${product.format} - ${price} DT). Pouvez-vous confirmer sa disponibilité ?`;
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
 }
 
 function catalogueCard(product, index) {
+  const salePrice = product.is_promo && product.promo_price ? product.promo_price : product.price;
+  const cartProduct = {...product, price: salePrice};
   return `<article class="catalogue-card">
     <span>${String(index + 1).padStart(2, '0')}</span>
+    <div class="product-labels">${product.is_new ? '<b>Nouveau</b>' : ''}${product.is_promo ? '<b>Promo</b>' : ''}${product.is_featured ? '<b>Vedette</b>' : ''}</div>
     <img src="${product.image_url}" alt="${product.name}" loading="lazy">
     <div><small>${product.subtitle || ''}</small><h2>${product.name}</h2>
     <p>${product.format}${product.description ? ` · ${product.description}` : ''}</p>
-    <footer><strong>${product.price} DT</strong><button class="add-cart" data-cart-product='${JSON.stringify(product).replaceAll("'", "&#39;")}'>Ajouter <b>+</b></button></footer></div>
+    <footer><strong>${product.is_promo && product.promo_price ? `<s>${product.price}</s> ${product.promo_price}` : product.price} DT</strong><button class="add-cart" data-cart-product='${JSON.stringify(cartProduct).replaceAll("'", "&#39;")}'>Ajouter <b>+</b></button></footer></div>
   </article>`;
 }
 
 function homeCard(product, index) {
-  return `<article class="product-card"><span class="product-index">N° ${String(index + 1).padStart(2, '0')}</span><figure class="product-photo"><img src="${product.image_url}" alt="${product.name}" loading="lazy"><figcaption>Récolte Miel Khadija</figcaption></figure><h3>${product.name}</h3><p>${product.subtitle || product.format}</p><div class="product-buy"><strong>${product.price} DT</strong><button class="add-cart" data-cart-product='${JSON.stringify(product).replaceAll("'", "&#39;")}'>Ajouter au panier <span>+</span></button></div><small class="draft">${product.format}</small></article>`;
+  const salePrice = product.is_promo && product.promo_price ? product.promo_price : product.price;
+  const cartProduct = {...product, price: salePrice};
+  return `<article class="product-card"><span class="product-index">N° ${String(index + 1).padStart(2, '0')}</span><div class="product-labels">${product.is_new ? '<b>Nouveau</b>' : ''}${product.is_promo ? '<b>Promo</b>' : ''}${product.is_featured ? '<b>Vedette</b>' : ''}</div><figure class="product-photo"><img src="${product.image_url}" alt="${product.name}" loading="lazy"><figcaption>Récolte Miel Khadija</figcaption></figure><h3>${product.name}</h3><p>${product.subtitle || product.format}</p><div class="product-buy"><strong>${product.is_promo && product.promo_price ? `<s>${product.price}</s> ${product.promo_price}` : product.price} DT</strong><button class="add-cart" data-cart-product='${JSON.stringify(cartProduct).replaceAll("'", "&#39;")}'>Ajouter au panier <span>+</span></button></div><small class="draft">${product.format}</small></article>`;
 }
 
 async function loadSupabaseProducts() {

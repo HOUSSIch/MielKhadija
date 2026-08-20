@@ -10,6 +10,10 @@ create table if not exists public.products (
   image_url text not null,
   display_order integer not null default 0,
   is_active boolean not null default true,
+  is_new boolean not null default false,
+  is_promo boolean not null default false,
+  is_featured boolean not null default false,
+  promo_price numeric(10,2) check (promo_price is null or promo_price >= 0),
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );

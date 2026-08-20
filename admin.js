@@ -28,14 +28,17 @@ async function loadProducts() {
   const { data, error } = await db.from('products').select('*').order('display_order');
   if (error) { fields('product-list').innerHTML = `<p>Base non initialisée : ${error.message}</p>`; return; }
   products = data || [];
-  fields('product-list').innerHTML = products.map(p => `<article class="admin-product"><img src="${p.image_url}" alt=""><div><h3>${p.name}</h3><p>${p.format} · ${p.price} DT</p></div><span class="status ${p.is_active ? '' : 'off'}">${p.is_active ? 'Visible' : 'Masqué'}</span><button data-edit="${p.id}">Modifier</button></article>`).join('') || '<p>Aucun produit.</p>';
+  fields('product-list').innerHTML = products.map(p => `<article class="admin-product"><button class="visibility-toggle ${p.is_active ? '' : 'off'}" data-toggle="${p.id}">${p.is_active ? 'Visible' : 'Masqué'}</button><img src="${p.image_url}" alt=""><div><h3>${p.name}</h3><p>${p.format} · ${p.is_promo && p.promo_price ? `<s>${p.price} DT</s> ${p.promo_price} DT` : `${p.price} DT`}</p><div class="product-badges">${p.is_new ? '<i>Nouveau</i>' : ''}${p.is_promo ? '<i>Promo</i>' : ''}${p.is_featured ? '<i>En vedette</i>' : ''}</div></div><button data-edit="${p.id}">Modifier</button></article>`).join('') || '<p>Aucun produit.</p>';
   document.querySelectorAll('[data-edit]').forEach(button => button.addEventListener('click', () => openProduct(products.find(p => p.id === button.dataset.edit))));
+  document.querySelectorAll('[data-toggle]').forEach(button => button.addEventListener('click', async () => { const product=products.find(p=>p.id===button.dataset.toggle); button.disabled=true; const {error}=await db.from('products').update({is_active:!product.is_active}).eq('id',product.id); if(error) alert(error.message); await loadProducts(); }));
 }
 
 function openProduct(product = null) {
   form.reset(); fields('product-id').value = product?.id || ''; fields('form-title').textContent = product ? 'Modifier le produit' : 'Nouveau produit';
   ['name','subtitle','price','format','description'].forEach(key => fields(key).value = product?.[key.replace('-', '_')] ?? '');
+  fields('promo-price').value = product?.promo_price ?? '';
   fields('display-order').value = product?.display_order ?? products.length + 1; fields('is-active').checked = product?.is_active ?? true;
+  fields('is-new').checked = product?.is_new ?? false; fields('is-promo').checked = product?.is_promo ?? false; fields('is-featured').checked = product?.is_featured ?? false;
   fields('delete-product').hidden = !product; fields('image-preview').hidden = !product?.image_url;
   if (product?.image_url) fields('image-preview').src = product.image_url; message('form-message', ''); dialog.showModal();
 }
@@ -53,7 +56,7 @@ form.addEventListener('submit', async event => {
   event.preventDefault(); message('form-message', 'Enregistrement…', true);
   try {
     const id = fields('product-id').value; const old = products.find(p => p.id === id); const uploaded = await uploadImage(fields('image').files[0]);
-    const payload = { name:fields('name').value.trim(), subtitle:fields('subtitle').value.trim(), price:Number(fields('price').value), format:fields('format').value.trim(), description:fields('description').value.trim(), display_order:Number(fields('display-order').value), is_active:fields('is-active').checked, image_url:uploaded || old?.image_url };
+    const payload = { name:fields('name').value.trim(), subtitle:fields('subtitle').value.trim(), price:Number(fields('price').value), promo_price:fields('promo-price').value ? Number(fields('promo-price').value) : null, format:fields('format').value.trim(), description:fields('description').value.trim(), display_order:Number(fields('display-order').value), is_active:fields('is-active').checked, is_new:fields('is-new').checked, is_promo:fields('is-promo').checked, is_featured:fields('is-featured').checked, image_url:uploaded || old?.image_url };
     if (!payload.image_url) throw new Error('Ajoutez une image au produit.');
     const query = id ? db.from('products').update(payload).eq('id', id) : db.from('products').insert(payload); const { error } = await query; if(error) throw error;
     dialog.close(); await loadProducts();
