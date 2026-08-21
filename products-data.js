@@ -20,7 +20,7 @@ function productLabels(product) {
 function catalogueCard(product, index) {
   const salePrice = product.is_promo && product.promo_price ? product.promo_price : product.price;
   const cartProduct = {...product, price: salePrice};
-  return `<article class="catalogue-card">
+  return `<article class="catalogue-card" data-product-detail='${JSON.stringify(product).replaceAll("'", "&#39;")}' tabindex="0" role="button" aria-label="Voir les détails de ${product.name}">
     <span>${String(index + 1).padStart(2, '0')}</span>
     ${productLabels(product)}
     <img src="${product.image_url}" alt="${product.name}" loading="lazy">
